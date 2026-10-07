@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Фабрика</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Russo+One&family=Rubik:wght@400;500;700&display=swap">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<canvas id="game"></canvas>
+<div id="vignette"></div>
+
+<!-- Игровой интерфейс -->
+<div id="hud" class="hidden">
+  <div id="topbar">
+    <div id="level-title" class="panel"></div>
+    <div id="stock" class="panel"></div>
+    <div id="controls" class="panel">
+      <button data-speed="0" title="Пауза (Пробел)">❚❚</button>
+      <button data-speed="1" title="Обычная скорость">▶</button>
+      <button data-speed="2" title="Скорость ×2">▶▶</button>
+      <button data-speed="3" title="Скорость ×3">▶▶▶</button>
+      <button id="btn-menu" title="Меню (Esc)">☰</button>
+    </div>
+  </div>
+  <div id="side">
+    <div class="panel" id="goals-panel"><h3>Цели</h3><div id="goals"></div></div>
+    <div class="panel" id="wave-panel"></div>
+    <div class="panel hidden" id="info-panel"></div>
+  </div>
+  <div id="hint" class="panel hidden"></div>
+  <div id="buildbar" class="panel"></div>
+  <div id="tooltip" class="hidden"></div>
+  <div id="toasts"></div>
+</div>
+
+<!-- Главное меню -->
+<div id="screen-menu" class="screen">
+  <div class="bg-grid"></div>
+  <svg class="bg-gear g1" viewBox="-50 -50 100 100"><use href="#gear-shape"/></svg>
+  <svg class="bg-gear g2" viewBox="-50 -50 100 100"><use href="#gear-shape"/></svg>
+  <svg class="bg-gear g3" viewBox="-50 -50 100 100"><use href="#gear-shape"/></svg>
+  <div class="belt"><div class="belt-items"></div></div>
+  <div class="menu-box">
+    <div class="logo">ФАБРИКА</div>
+    <div class="tagline">Построй завод. Наладь производство. Отбейся от жуков.</div>
+    <div class="menu-buttons">
+      <button class="btn primary big" id="btn-play">Играть</button>
+      <button class="btn big" id="btn-howto">Как играть</button>
+      <button class="btn ghost" id="btn-reset">Сбросить прогресс</button>
+    </div>
+  </div>
+</div>
+
+<!-- Выбор уровня -->
+<div id="screen-levels" class="screen hidden">
+  <div class="bg-grid"></div>
+  <div class="page">
+    <div class="page-head">
+      <button class="btn ghost" data-back>← Назад</button>
+      <h1>Выбор уровня</h1>
+    </div>
+    <div id="level-list"></div>
+  </div>
+</div>
+
+<!-- Как играть -->
+<div id="screen-howto" class="screen hidden">
+  <div class="bg-grid"></div>
+  <div class="page howto">
+    <div class="page-head">
+      <button class="btn ghost" data-back>← Назад</button>
+      <h1>Как играть</h1>
+    </div>
+    <div class="howto-grid">
+      <section>
+        <h3>Цель</h3>
+        <p>На каждом уровне нужно доставить в <b>Ядро</b> определённые предметы. Ядро в центре карты принимает всё подряд, а из накопленных ресурсов ты строишь новые здания.</p>
+      </section>
+      <section>
+        <h3>Производство</h3>
+        <p><b>Бур</b> ставится на залежь и добывает руду. <b>Конвейер</b> везёт предметы. <b>Плавильня</b> и <b>Сборщик</b> перерабатывают сырьё по рецепту: нажми на здание, чтобы выбрать рецепт.</p>
+        <p>Здания отдают продукцию в соседние конвейеры, которые не смотрят в само здание, и в соседние здания, которым она нужна.</p>
+      </section>
+      <section>
+        <h3>Враги</h3>
+        <p>Со второго уровня из <b>логов</b> на краю карты выползают жуки. Они идут к Ядру и грызут всё на пути. <b>Турели</b> стреляют железными пластинами или патронами, которые нужно подвозить конвейером.</p>
+      </section>
+      <section>
+        <h3>Управление</h3>
+        <table class="keys">
+          <tr><td><kbd>ЛКМ</kbd></td><td>построить / выбрать здание / двигать карту</td></tr>
+          <tr><td><kbd>ЛКМ</kbd> + тянуть</td><td>проложить конвейер</td></tr>
+          <tr><td><kbd>ПКМ</kbd></td><td>снести (возврат 75%)</td></tr>
+          <tr><td><kbd>1</kbd>…<kbd>9</kbd></td><td>выбрать постройку</td></tr>
+          <tr><td><kbd>R</kbd></td><td>повернуть</td></tr>
+          <tr><td><kbd>X</kbd></td><td>режим сноса</td></tr>
+          <tr><td><kbd>WASD</kbd> / стрелки</td><td>двигать камеру</td></tr>
+          <tr><td>колесо мыши</td><td>масштаб</td></tr>
+          <tr><td><kbd>Пробел</kbd></td><td>пауза</td></tr>
+          <tr><td><kbd>Esc</kbd></td><td>отмена / меню</td></tr>
+        </table>
+      </section>
+    </div>
+  </div>
+</div>
+
+<div id="modal" class="hidden"><div class="modal-box" id="modal-box"></div></div>
+
+<svg width="0" height="0" style="position:absolute">
+  <defs>
+    <path id="gear-shape" fill-rule="evenodd" d="M45.9 -3.3 L45.9 3.3 L35.4 6.8 L34.0 11.8 L41.4 20.1 L38.1 25.8 L27.2 23.6 L23.6 27.2 L25.8 38.1 L20.1 41.4 L11.8 34.0 L6.8 35.4 L3.3 45.9 L-3.3 45.9 L-6.8 35.4 L-11.8 34.0 L-20.1 41.4 L-25.8 38.1 L-23.6 27.2 L-27.2 23.6 L-38.1 25.8 L-41.4 20.1 L-34.0 11.8 L-35.4 6.8 L-45.9 3.3 L-45.9 -3.3 L-35.4 -6.8 L-34.0 -11.8 L-41.4 -20.1 L-38.1 -25.8 L-27.2 -23.6 L-23.6 -27.2 L-25.8 -38.1 L-20.1 -41.4 L-11.8 -34.0 L-6.8 -35.4 L-3.3 -45.9 L3.3 -45.9 L6.8 -35.4 L11.8 -34.0 L20.1 -41.4 L25.8 -38.1 L23.6 -27.2 L27.2 -23.6 L38.1 -25.8 L41.4 -20.1 L34.0 -11.8 L35.4 -6.8Z M0 -16 A16 16 0 1 0 0.01 -16Z"/>
+  </defs>
+</svg>
+
+<script src="js/util.js"></script>
+<script src="js/data.js"></script>
+<script src="js/buildings.js"></script>
+<script src="js/enemies.js"></script>
+<script src="js/world.js"></script>
+<script src="js/render.js"></script>
+<script src="js/ui.js"></script>
+<script src="js/main.js"></script>
+</body>
+</html>
