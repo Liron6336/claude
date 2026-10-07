@@ -433,4 +433,5 @@ const Game = {
   },
 };
 
-window.addEventListener('DOMContentLoaded', () => Game.init());
+if (document.readyState === 'loading') window.addEventListener('DOMContentLoaded', () => Game.init());
+else Game.init();
