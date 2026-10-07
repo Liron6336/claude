@@ -545,8 +545,7 @@ kbd {
   cursor: pointer;
   transition: transform 0.12s, border-color 0.15s, box-shadow 0.15s;
 }
-.level-card:hover:not(:disabled) { transform: translateY(-2px); border-color: var(--accent); box-shadow: 0 10px 30px rgba(240, 160, 48, 0.12); }
-.level-card.locked { opacity: 0.45; cursor: not-allowed; }
+.level-card:hover { transform: translateY(-2px); border-color: var(--accent); box-shadow: 0 10px 30px rgba(240, 160, 48, 0.12); }
 .lc-num {
   flex: none;
   width: 52px;
@@ -558,7 +557,7 @@ kbd {
   background: #222c37;
   color: var(--muted);
 }
-.level-card:not(.locked) .lc-num { background: linear-gradient(#f5b043, #d5861c); color: #1d1306; }
+.level-card .lc-num { background: linear-gradient(#f5b043, #d5861c); color: #1d1306; }
 .level-card.done .lc-num { background: linear-gradient(#4be08a, #23a05a); color: #06210f; }
 .lc-body { flex: 1; min-width: 0; }
 .lc-name { font-family: var(--font-head); font-size: 17px; margin-bottom: 8px; }

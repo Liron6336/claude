@@ -61,17 +61,16 @@ const UI = {
     const p = Progress.data;
     const box = $('#level-list');
     box.innerHTML = LEVELS.map((L, i) => {
-      const locked = i + 1 > p.unlocked;
       const best = p.best[i];
       const goals = L.goals.map(g => g.type === 'deliver'
         ? `<span><img src="${Icons.item(g.item, 18)}" alt="">${g.amount}</span>`
         : `<span><img src="${Icons.enemy(g.enemy, 18)}" alt="">×${g.amount}</span>`).join('');
-      return `<button class="level-card${locked ? ' locked' : ''}${best ? ' done' : ''}" data-level="${i}" ${locked ? 'disabled' : ''}>
+      return `<button class="level-card${best ? ' done' : ''}" data-level="${i}">
         <div class="lc-num">${i + 1}</div>
         <div class="lc-body">
           <div class="lc-name">${L.name}</div>
           <div class="lc-goals">${goals}</div>
-          <div class="lc-meta">${locked ? 'Пройди предыдущий уровень' : best ? 'Пройден за ' + fmtTime(best) : L.waves ? 'Есть враги' : 'Без врагов'}</div>
+          <div class="lc-meta">${best ? 'Пройден за ' + fmtTime(best) : L.waves ? 'Есть враги' : 'Без врагов'}</div>
         </div>
       </button>`;
     }).join('');
@@ -82,7 +81,7 @@ const UI = {
   confirmReset() {
     this.showModal({
       title: 'Сбросить прогресс?',
-      body: '<p>Все пройденные уровни снова станут закрытыми.</p>',
+      body: '<p>Отметки о пройденных уровнях и лучшее время будут удалены.</p>',
       buttons: [
         { label: 'Отмена', action: () => this.hideModal() },
         { label: 'Сбросить', cls: 'danger', action: () => { Progress.reset(); this.hideModal(); } },

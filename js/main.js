@@ -3,7 +3,7 @@
 // Прогресс хранится в браузере. Если хранилище недоступно, игра всё равно работает
 const Progress = {
   key: 'factory_progress_v1',
-  data: { unlocked: 1, best: {} },
+  data: { best: {} },
   load() {
     try {
       const s = localStorage.getItem(this.key);
@@ -14,13 +14,12 @@ const Progress = {
     try { localStorage.setItem(this.key, JSON.stringify(this.data)); } catch (e) { /* без сохранений */ }
   },
   complete(i, time) {
-    this.data.unlocked = Math.min(LEVELS.length, Math.max(this.data.unlocked, i + 2));
     const b = this.data.best[i];
     if (!b || time < b) this.data.best[i] = time;
     this.save();
   },
   reset() {
-    this.data = { unlocked: 1, best: {} };
+    this.data = { best: {} };
     this.save();
   },
 };
